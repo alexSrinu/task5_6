@@ -1,0 +1,34 @@
+﻿@model List<task5.Models.Details>
+
+<table class="table table-bordered table-striped" style="width: 100%;">
+    <thead>
+        <tr>
+            <th>Name</th>
+            <th>Email</th>
+            <th>Mobile</th>
+            <th>State</th>
+            <th>City</th>
+            <th>Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var user in Model)
+        {
+            <tr>
+                <td>@user.Name</td>
+                <td>@user.Email</td>
+                <td>@user.Mobile</td>
+                <td>@user.StateName</td>
+                <td>@user.CityName</td>
+                <td>
+                    <a href="@Url.Action("Edit", new { id = @user.Id })" class="btn btn-warning btn-sm" title="Edit">
+                        <i class="bi bi-pencil"></i>
+                    </a>
+                    <button type="button" class="btn btn-danger btn-sm" onclick="confirmDelete(@user.Id)">
+                        <i class="bi bi-trash3-fill"></i>
+                    </button>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>

@@ -1,0 +1,87 @@
+﻿@model task5.Models.Details
+
+@{
+    ViewBag.Title = "Edit";
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.3.1/dist/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+}
+
+<div class="container mt-4">
+    <div class="row">
+        <div class="col-md-8 offset-md-2">
+            <div class="card">
+                <div class="card-header text-center">
+                    <h4>Edit</h4>
+                </div>
+                <div class="card-body">
+                    @using (Html.BeginForm("Edit", "Details", FormMethod.Post, new { enctype = "multipart/form-data" }))
+                    {
+                        @Html.AntiForgeryToken()
+                        @Html.HiddenFor(m => m.pagenumber)
+
+                        <div class="form-group">
+                            @Html.LabelFor(m => m.Name, new { @class = "form-label" })
+                            @Html.TextBoxFor(m => m.Name, new { @class = "form-control" })
+                            @Html.ValidationMessageFor(m => m.Name, "", new { @class = "text-danger" })
+                        </div>
+
+                        <div class="form-group">
+                            @Html.LabelFor(m => m.Email, new { @class = "form-label" })
+                            @Html.TextBoxFor(m => m.Email, new { @class = "form-control" })
+                            @Html.ValidationMessageFor(m => m.Email, "", new { @class = "text-danger" })
+                        </div>
+
+                        <div class="form-group">
+                            @Html.LabelFor(m => m.Mobile, new { @class = "form-label" })
+                            @Html.TextBoxFor(m => m.Mobile, new { @class = "form-control" })
+                            @Html.ValidationMessageFor(m => m.Mobile, "", new { @class = "text-danger" })
+                        </div>
+
+                        <div class="form-group">
+                            @Html.LabelFor(m => m.StateId, new { @class = "form-label" })
+                            @Html.DropDownList("StateId", (SelectList)ViewBag.States, "Select State", new { @class = "form-control", id = "stateDropdown" })
+                        </div>
+
+                        <div class="form-group">
+                            @Html.LabelFor(m => m.CityId, new { @class = "form-label" })
+                            @Html.DropDownList("CityId", (SelectList)ViewBag.Cities, "Select City", new { @class = "form-control", id = "cityDropdown" })
+                        </div>
+
+                        <div class="form-group text-center">
+                            <input type="submit" value="Update" class="btn btn-primary" />
+                        </div>
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="~/Scripts/jquery-3.7.1.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@4.3.1/dist/js/bootstrap.bundle.min.js" integrity="sha384-smH6AB1j7n4r6cn+dErkA4QwpHXmX2b1v2WvTqXKXoj4A7Jk4+0C1jUGmzhgXx5D" crossorigin="anonymous"></script>
+<script>
+    $(document).ready(function () {
+        $('#stateDropdown').change(function () {
+            var stateId = $(this).val();
+            if (stateId) {
+                $.ajax({
+                    type: 'GET',
+                    url: '@Url.Action("GetCitiesByStateId", "Details")',
+                    data: { StateId: stateId },
+                    success: function (cities) {
+                        $('#cityDropdown').empty();
+                        $('#cityDropdown').append($('<option>').text('Select City').attr('value', ''));
+                        $.each(cities, function (i, city) {
+                            $('#cityDropdown').append($('<option>').text(city.CityName).attr('value', city.CityId));
+                        });
+                    },
+                    error: function () {
+                        alert('Failed to load cities.');
+                    }
+                });
+            } else {
+                $('#cityDropdown').empty();
+                $('#cityDropdown').append($('<option>').text('Select City').attr('value', ''));
+            }
+        });
+    });
+</script>
